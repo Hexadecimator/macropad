@@ -24,32 +24,37 @@
  *
  */
 
-// ---------------------------------
-// Key definitions
-#define BUTTON_KEY1 KEY_F13
-#define BUTTON_KEY2 KEY_F14
-#define BUTTON_KEY3 KEY_F15
-#define BUTTON_KEY4 KEY_F16
-#define BUTTON_KEY5 KEY_F17
-#define BUTTON_KEY6 KEY_F18
-#define BUTTON_KEY7 KEY_F19
-#define BUTTON_KEY8 KEY_F20
-
-// Pin definitions
-#define BUTTON_PIN1 2
-#define BUTTON_PIN2 3
-#define BUTTON_PIN3 4
-#define BUTTON_PIN4 5
-#define BUTTON_PIN5 6
-#define BUTTON_PIN6 7
-#define BUTTON_PIN7 8
-#define BUTTON_PIN8 9
-// ---------------------------------
 
 #include "Keyboard.h"
 
+
+// Key definitions
+#define WIN_KEY_MOD KEY_LEFT_GUI
+#define CTL_KEY_MOD KEY_LEFT_CTRL
+
+#define BUTTON_KEY1 KEY_F13  // F13
+#define BUTTON_KEY2 'd'      // WINDOWS KEY [KEY_LEFT_GUI] + D
+#define BUTTON_KEY3 'e'      // WINDOWS KEY [KEY_LEFT_GUI] + E
+#define BUTTON_KEY4 KEY_F16  // F16
+#define BUTTON_KEY5 KEY_F17  // F17
+#define BUTTON_KEY6 'v'      // CTRL [KEY_LEFT_CTRL] + V
+#define BUTTON_KEY7 'c'      // CTRL [KEY_LEFT_CTRL] + C
+#define BUTTON_KEY8 KEY_F20  // F20
+
+// Pin definitions
+#define BUTTON_PIN1 2  // KEY_F13
+#define BUTTON_PIN2 3  // WINDOWS KEY + D
+#define BUTTON_PIN3 4  // WINDOWS KEY + E
+#define BUTTON_PIN4 5  // KEY_F16
+#define BUTTON_PIN5 6  // KEY_F17
+#define BUTTON_PIN6 7  // CTRL+V
+#define BUTTON_PIN7 8  // CTRL+C 
+#define BUTTON_PIN8 9  // KEY_F20
+
+
 // Button helper class for handling press/release and debouncing
-class button {
+class button 
+{
   public:
   const char key;
   const uint8_t pin;
@@ -57,13 +62,30 @@ class button {
   button(uint8_t k, uint8_t p) : key(k), pin(p){}
 
   void press(boolean state){
-    if(state == pressed || (millis() - lastPressed  <= debounceTime)){
+    if(state == pressed || (millis() - lastPressed  <= debounceTime))
+    {
       return; // Nothing to see here, folks
     }
 
     lastPressed = millis();
-
-    state ? Keyboard.press(key) : Keyboard.release(key);    
+    
+    if (state) // had to change Keyboard.release(key) to Keyboard.releaseAll() because there are multiple simultaneous button presses now
+    {
+      if(pin==3 || pin==4)
+      {
+        Keyboard.press(WIN_KEY_MOD); // PIN 2/3 require KEY_LEFT_GUI modifier be pressed alongside key
+      }
+      else if (pin==7 || pin==8)
+      {
+        Keyboard.press(CTL_KEY_MOD); // PIN 7/8 require KEY_LEFT_CTRL modifier be pressed alongside key
+      }
+        
+      Keyboard.press(key);
+    }
+    else
+    {
+      Keyboard.releaseAll();
+    }
     pressed = state;
   }
 
@@ -75,10 +97,11 @@ class button {
   const long debounceTime = 30;
   unsigned long lastPressed;
   boolean pressed = 0;
-} ;
+};
 
 // Button objects, organized in array
-button buttons[] = {
+button buttons[] = 
+{
   {BUTTON_KEY1, BUTTON_PIN1},
   {BUTTON_KEY2, BUTTON_PIN2},
   {BUTTON_KEY3, BUTTON_PIN3},
@@ -92,29 +115,35 @@ button buttons[] = {
 const uint8_t NumButtons = sizeof(buttons) / sizeof(button);
 const uint8_t ledPin = 17;
 
-void setup() { 
+void setup() 
+{ 
   // Safety check. Ground pin #1 (RX) to cancel keyboard inputs.
   pinMode(1, INPUT_PULLUP);
-  if(!digitalRead(1)){
+  if(!digitalRead(1))
+  {
     failsafe();
   }
 
   // Set LEDs Off. Active low.
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, HIGH);
-  TXLED0;
+  TXLED0; // turn off TX LED (this is a pro micro specific compiler macro)
 
-  for(int i = 0; i < NumButtons; i++){
+  for(int i = 0; i < NumButtons; i++)
+  {
     pinMode(buttons[i].pin, INPUT_PULLUP);
   }
 }
 
-void loop() {
-  for(int i = 0; i < NumButtons; i++){
+void loop() 
+{
+  for(int i = 0; i < NumButtons; i++)
+  {
     buttons[i].update();
   }
 }
 
-void failsafe(){
+void failsafe()
+{
   for(;;){} // Just going to hang out here for awhile :D
 }
