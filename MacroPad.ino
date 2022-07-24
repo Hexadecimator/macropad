@@ -22,28 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
+ *
+ *
+ ////////////////////////////////////////////// 
+//     8-Key Pinout (Keycap side up)
+//            9 6 5 2 
+//            8 7 4 3 
+//         LED Strip Pin 10
+////////////////////////////////////////////// 
  */
 
 // ---------------------------------
 // Key definitions
-#define BUTTON_KEY1 KEY_F13
-#define BUTTON_KEY2 KEY_F14
-#define BUTTON_KEY3 KEY_F15
-#define BUTTON_KEY4 KEY_F16
-#define BUTTON_KEY5 KEY_F17
-#define BUTTON_KEY6 KEY_F18
-#define BUTTON_KEY7 KEY_F19
-#define BUTTON_KEY8 KEY_F20
+#define BUTTON_KEY1 KEY_F6 // yield turn
+#define BUTTON_KEY2 KEY_F3 // remove auto yields
+#define BUTTON_KEY3 KEY_F3 // remove auto yields
+#define BUTTON_KEY4 KEY_F8 // Always yield to this trigger
+#define BUTTON_KEY5 KEY_F2 // OK
+#define BUTTON_KEY6 KEY_F3 // remove auto yields
+#define BUTTON_KEY7 KEY_F3 // remove auto yields
+#define BUTTON_KEY8 KEY_F2 // OK
+
+ ////////////////////////////////////////////// 
+//     8-Key Pinout (Keycap side up)
+//            9 6 5 2 
+//            8 7 4 3 
+//         LED Strip Pin 10
+////////////////////////////////////////////// 
 
 // Pin definitions
-#define BUTTON_PIN1 2
-#define BUTTON_PIN2 3
-#define BUTTON_PIN3 4
-#define BUTTON_PIN4 5
-#define BUTTON_PIN5 6
-#define BUTTON_PIN6 7
-#define BUTTON_PIN7 8
-#define BUTTON_PIN8 9
+#define BUTTON_PIN1 2 // KEY_F6 
+#define BUTTON_PIN2 3 // KEY_F3
+#define BUTTON_PIN3 4 // KEY_F3
+#define BUTTON_PIN4 5 // KEY_F8
+#define BUTTON_PIN5 6 // KEY_F2
+#define BUTTON_PIN6 7 // KEY_F3
+#define BUTTON_PIN7 8 // KEY_F3
+#define BUTTON_PIN8 9 // KEY_F2
 // ---------------------------------
 
 #include "Keyboard.h"
